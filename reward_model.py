@@ -16,16 +16,12 @@ für GRPO-Training verwendet werden.
 from __future__ import annotations
 
 import re
-from typing import Any, Optional
+from typing import Any, Optional, TYPE_CHECKING
 
-import torch
-import torch.nn as nn
-from transformers import (
-    AutoModelForCausalLM,
-    AutoTokenizer,
-    PreTrainedModel,
-    PreTrainedTokenizer,
-)
+if TYPE_CHECKING:
+    import torch
+    import torch.nn as nn
+    from transformers import PreTrainedModel, PreTrainedTokenizer
 
 
 class AgentRewardModel:
@@ -59,14 +55,17 @@ class AgentRewardModel:
             "tool_usage": 0.4,
         }
         self.use_model = use_model
-        self.model: Optional[PreTrainedModel] = None
-        self.tokenizer: Optional[PreTrainedTokenizer] = None
+        self.model: Any = None
+        self.tokenizer: Any = None
 
         if use_model:
             self._load_model(model_name_or_path, device)
 
     def _load_model(self, model_name_or_path: str, device: str) -> None:
-        """Lädt das Reward-Modell."""
+        """Lädt das Reward-Modell (lazy import für optionale GPU-Nutzung)."""
+        import torch
+        from transformers import AutoModelForCausalLM, AutoTokenizer
+
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name_or_path,
             trust_remote_code=True,
@@ -282,6 +281,8 @@ class AgentRewardModel:
 
         Nutzt das geladene Modell um die Qualität der Completion zu bewerten.
         """
+        import torch
+
         if self.model is None or self.tokenizer is None:
             return self._rule_based_reward(prompt, completion, ground_truth)
 
@@ -340,26 +341,28 @@ class AgentRewardModel:
         return "\n".join(parts)
 
 
-class RewardModelWrapper(nn.Module):
+class RewardModelWrapper:
     """
     PyTorch-Modul-Wrapper für das Reward-Modell.
 
     Kann als eigenständiges Reward-Modell für TRL/GRPO-Training verwendet werden.
+    Erfordert torch + transformers (lazy import).
     """
 
     def __init__(
         self,
-        base_model: PreTrainedModel,
+        base_model: Any,
         reward_dim: int = 1,
         dropout: float = 0.1,
     ):
         """
         Args:
-            base_model: Das Basis-Sprachmodell.
+            base_model: Das Basis-Sprachmodell (transformers.PreTrainedModel).
             reward_dim: Dimension des Reward-Heads.
             dropout: Dropout-Rate.
         """
-        super().__init__()
+        import torch.nn as nn
+
         self.base_model = base_model
         hidden_size = base_model.config.hidden_size
 
@@ -375,16 +378,16 @@ class RewardModelWrapper(nn.Module):
 
     def forward(
         self,
-        input_ids: torch.Tensor,
-        attention_mask: torch.Tensor,
+        input_ids: Any,
+        attention_mask: Any,
         **kwargs: Any,
-    ) -> torch.Tensor:
+    ) -> Any:
         """
         Forward-Pass des Reward-Modells.
 
         Args:
-            input_ids: Token-IDs.
-            attention_mask: Attention-Maske.
+            input_ids: Token-IDs (torch.Tensor).
+            attention_mask: Attention-Maske (torch.Tensor).
 
         Returns:
             Reward-Scores (batch_size, reward_dim).
@@ -404,7 +407,7 @@ class RewardModelWrapper(nn.Module):
 
 def create_reward_function(
     reward_model: AgentRewardModel,
-) -> callable:
+):
     """
     Erstellt eine Reward-Funktion kompatibel mit TRL's GRPOTrainer.
 

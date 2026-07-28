@@ -150,7 +150,7 @@ markers = [
 ]
 
 [tool.uv]
-required-version = ">=0.11.7"
+required-version = ">=0.11.6"
 conflicts = [
     [
         { extra = "backend" },
