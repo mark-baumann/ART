@@ -21,7 +21,6 @@ from typing import Any, Optional, TYPE_CHECKING
 if TYPE_CHECKING:
     import torch
     import torch.nn as nn
-    from transformers import PreTrainedModel, PreTrainedTokenizer
 
 
 class AgentRewardModel:

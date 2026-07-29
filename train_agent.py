@@ -14,19 +14,15 @@ Verwendung:
     python train_agent.py --config my_config.py    # Benutzerdefinierte Config
 """
 
-from __future__ import annotations
-
 import argparse
 import json
 import logging
 import os
 import sys
-from dataclasses import dataclass
-from pathlib import Path
 from typing import Any, Optional
 
 import torch
-from datasets import Dataset, load_dataset
+from datasets import Dataset
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from transformers import (
     AutoModelForCausalLM,
@@ -34,13 +30,11 @@ from transformers import (
     BitsAndBytesConfig,
     PreTrainedModel,
     PreTrainedTokenizer,
-    TrainingArguments,
 )
 from trl import GRPOConfig, GRPOTrainer
 
 # Lokale Imports
 from config import (
-    GRPOConfig as LocalGRPOConfig,
     LoRAConfig as LocalLoRAConfig,
     ModelConfig,
     TrainingConfig,
