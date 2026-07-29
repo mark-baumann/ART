@@ -4,7 +4,7 @@ Trainingskonfigurationen für GRPO-Training mit LoRA.
 """
 
 from dataclasses import dataclass, field
-from typing import Optional, Literal
+from typing import Literal, Optional
 
 
 @dataclass
