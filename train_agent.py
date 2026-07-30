@@ -21,9 +21,9 @@ import os
 import sys
 from typing import Any, Optional
 
-import torch
 from datasets import Dataset
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+import torch
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
@@ -36,6 +36,8 @@ from trl import GRPOConfig, GRPOTrainer
 # Lokale Imports
 from config import (
     LoRAConfig as LocalLoRAConfig,
+)
+from config import (
     ModelConfig,
     TrainingConfig,
     get_llama_config,
