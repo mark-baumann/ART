@@ -1,0 +1,13 @@
+name: Build & Deploy
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    uses: mark-baumann/deployment-pipeline/.github/workflows/build-deploy.yml@main
+    with:
+      service_name: art-agent
+      port: 8519
+    secrets: inherit
