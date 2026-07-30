@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    uses: mark-baumann/deployment-pipeline/.github/workflows/build-deploy.yml@main
+    uses: mark-baumann/infrastruktur-deployment/.github/workflows/build-deploy.yml@main
     with:
       service_name: art-agent
       port: 8519
