@@ -22,3 +22,6 @@ trajectories/
 !/src/art/wandb/**
 /src/art/wandb/__pycache__/
 scratch/
+wandb_runs/
+checkpoints/
+*.jsonl
