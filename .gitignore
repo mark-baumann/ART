@@ -25,3 +25,5 @@ scratch/
 wandb_runs/
 checkpoints/
 *.jsonl
+.venv
+*.pyc
