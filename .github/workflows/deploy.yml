@@ -1,13 +1,25 @@
-name: Build & Deploy
+name: Deploy
+
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
+    inputs:
+      service_name:
+        required: true
+        type: string
+        description: "Docker-Compose service name"
+      port:
+        required: true
+        type: string
+        description: "Service port"
 
 jobs:
   deploy:
-    uses: mark-baumann/infrastruktur-deployment/.github/workflows/build-deploy.yml@main
+    uses: mark-baumann/infrastruktur-deployment/.github/workflows/build-deploy.yml@master
     with:
-      service_name: art-agent
-      port: 8519
+      service_name: ${{ inputs.service_name || 'art-agent' }}
+      port: ${{ inputs.port || '8519' }}
     secrets: inherit
