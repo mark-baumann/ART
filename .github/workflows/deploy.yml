@@ -16,9 +16,16 @@ on:
         type: string
         description: "Service port"
 
+permissions:
+  packages: write
+  contents: read
+
 jobs:
   deploy:
     uses: mark-baumann/infrastruktur-deployment/.github/workflows/build-deploy.yml@master
+    permissions:
+      packages: write
+      contents: read
     with:
       service_name: ${{ inputs.service_name || 'art-agent' }}
       port: ${{ inputs.port || '8519' }}
